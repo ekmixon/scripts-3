@@ -6,10 +6,10 @@ import time
 from terminaltables import AsciiTable
 #Getting location of PentestBox
 pentestbox_ROOT_DIRECTORY=os.environ['pentestbox_ROOT']
-bin_location=pentestbox_ROOT_DIRECTORY+"/bin"
-base_location=pentestbox_ROOT_DIRECTORY+"/base/"
-config_location=pentestbox_ROOT_DIRECTORY+"/config/"
-scripts_location=bin_location+"/scripts"
+bin_location = f"{pentestbox_ROOT_DIRECTORY}/bin"
+base_location = f"{pentestbox_ROOT_DIRECTORY}/base/"
+config_location = f"{pentestbox_ROOT_DIRECTORY}/config/"
+scripts_location = f"{bin_location}/scripts"
 def updating_scripts():
     print green("Updating Required Files")
     os.chdir(scripts_location)

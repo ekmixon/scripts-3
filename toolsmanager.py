@@ -8,9 +8,9 @@ from terminaltables import *
 #Getting location of PentestBox
 pentestbox_ROOT_DIRECTORY=os.environ['pentestbox_ROOT']
 #Setting location
-scripts_location=pentestbox_ROOT_DIRECTORY+"/bin/scripts/"
-bin_location=pentestbox_ROOT_DIRECTORY+"/bin"
-custom_tool_location=bin_location+"/customtools"
+scripts_location = f"{pentestbox_ROOT_DIRECTORY}/bin/scripts/"
+bin_location = f"{pentestbox_ROOT_DIRECTORY}/bin"
+custom_tool_location = f"{bin_location}/customtools"
 #Updating Function for updating all files in scripts folder
 def updating_scripts():
     print green("Updating Required Files")
@@ -21,13 +21,12 @@ def updating_scripts():
     os.system('clear')
 #First go to customaliases path and then append alias to that file.
 def add_alias(filename):
-    customaliasespath=pentestbox_ROOT_DIRECTORY+"/bin/customtools"
+    customaliasespath = f"{pentestbox_ROOT_DIRECTORY}/bin/customtools"
     os.chdir(customaliasespath)
-    customaliasesfile=open('customaliases','a')
-    terminal_alias=file_parser(filename, "TERMINAL_ALIAS")
-    path_for_alias=file_parser(filename, "PATH_FOR_ALIAS")
-    customaliasesfile.write(terminal_alias+"="+path_for_alias+"\n")
-    customaliasesfile.close()
+    with open('customaliases','a') as customaliasesfile:
+        terminal_alias=file_parser(filename, "TERMINAL_ALIAS")
+        path_for_alias=file_parser(filename, "PATH_FOR_ALIAS")
+        customaliasesfile.write(f"{terminal_alias}={path_for_alias}" + "\n")
 #welcome menu
 def welcome():
     print cyan("Welcome to PentestBox tools installation Utility.")
@@ -199,12 +198,12 @@ def parse_tools(categoryPath):
 def update_module(filename,name):
     update_location = file_parser(filename, "INSTALLATION_CATEGORY")
     update_location=custom_tool_location+update_location
+    update_location = f"{update_location}/{name}/"
+    os.chdir(update_location)
     update_location = update_location +"/"+ name + "/"
     os.chdir(update_location)
     if is_git_directory():
         os.system("git pull origin master")
-    else:
-        print cyan("Not a git repository.Only git repository can be updated.")
 #Check all the folder in a directory and then update them if there are git directory
 def tools_updater(tools_category):
     folder_path=custom_tool_location+tools_category
@@ -247,22 +246,20 @@ def remove_module(filename,name):
     install_location = file_parser(filename, "INSTALLATION_CATEGORY")
     install_location=custom_tool_location+ str(install_location)+"/"
     os.chdir(install_location)
-    remove_command="rm -rf "+str(name)
+    remove_command = f"rm -rf {str(name)}"
     os.system(remove_command)
     terminal_alias=file_parser(filename, "TERMINAL_ALIAS")
     path_for_alias=file_parser(filename, "PATH_FOR_ALIAS")
-    complete_alias=str(terminal_alias)+"="+str(path_for_alias)
+    complete_alias = f"{str(terminal_alias)}={str(path_for_alias)}"
     complete_alias_n=complete_alias+"\n"
     os.chdir(custom_tool_location)
-    print complete_alias_n
-    f=open("customaliases","r")
-    lines=f.readline()
-    f.close()
-    f=open("customaliases","w")
-    for line in lines:
-        if line!=complete_alias or line!=complete_alias_n:
-            f.write(line)
-    f.close()
+    install_location = file_parser(filename, "INSTALLATION_CATEGORY")
+    with open("customaliases","r") as f:
+        lines=f.readline()
+    with open("customaliases","w") as f:
+        for line in lines:
+            if line!=complete_alias or line!=complete_alias_n:
+                f.write(line)
 #This Function add Name and Description in tabular form for modules listing
 def header():
     print ("""=================================
@@ -276,7 +273,7 @@ def file_parser(filename, term):
         for line in fileopen:
             line = line.rstrip()
             if line.startswith(term):
-                line = line.replace(term + "=", "")
+                line = line.replace(f"{term}=", "")
                 line = line.replace('"', "", 2)
                 counter = 1
                 return line
